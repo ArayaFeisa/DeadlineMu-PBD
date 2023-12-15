@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200;300;400;500;600;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --main-color: #FAFAFA;
+    --secondary-color: #5B5B5B;
+    --third-color: #2F2F2F;
+    --grey-color: #F4F4F4;
+}
+
+body {
+    width: auto;
+    font-family: "Poppins", sans-serif;
+    margin: 20px 50px 50px 50px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--main-color);
+}
+
+header {
+    width: 550px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    max-width: 40px;
+    height: auto;
+}
+
+.header-text {
+    margin-left: 16px; /* Adjust the spacing between logo and text */
+}
+
+/* Yang deket logo */
+h1.logo-text {
+    font-family: Bai Jamjuree, sans-serif;
+    font-size: 32px;
+    color: var(--third-color);
+}
+
+.wrapper {
+    width: 330px;
+    padding: 20px 10px;
+    margin: 70px auto;
+    background-color: var(--main-color);
+    border-radius: 10px;
+    flex: auto;
+}
+
+h1.login-title {
+    font-size: 38px;
+    text-align: center;
+    width: 348px;
+    color: var(--third-color);
+}
+
+/* yang di deket login */
+span.logo-title {
+    font-family: Bai Jamjuree, sans-serif;
+    font-size: 38px;
+    color: var(--third-color);
+}
+
+form {
+    max-width: 330px;
+}
+
+form input {
+    width: 100%;
+    outline: none;
+    border: 1px;
+    padding: 15px 8px;
+    margin-bottom: 10px;
+    border-radius: 7px;
+    border: 1px solid rgba(26, 26, 26, 0.50);
+    font-size: 16px;
+    font-weight: 500;
+    background-color: var(--main-color);
+}
+
+form label {
+    font-size: 16px;
+    color: var(--third-color);
+}
+
+button {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--main-color);
+    margin-top: 20px;
+    padding: 15px 8px;
+    border-radius: 7px;
+    outline: none;
+    border: none;
+    width: 348px;
+    background-color: var(--third-color);
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+}
+
+.create {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 16px;
+    color: var(--third-color);
+}
+
+.create a {
+    color: var(--third-color);
+    text-decoration: none;
+}
+
+.create a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
