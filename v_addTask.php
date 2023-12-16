@@ -1,6 +1,5 @@
 <?php
 include('connection.php');
-include('addActivityLog.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle form submission for adding a new task
