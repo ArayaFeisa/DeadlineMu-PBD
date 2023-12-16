@@ -45,7 +45,7 @@ $result = mysqli_query($connection, $selectSql);
         <a href="task_and_category.php">Task and Category</a>
         <a href="activity_log.php">Task Log</a>
         <a href="bookmark.php">Bookmark</a>
-        <a href="#">Logout</a>
+        <a href="logout.php">Logout</a>
     </div>
 
     <div class="container">

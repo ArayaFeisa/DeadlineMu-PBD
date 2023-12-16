@@ -1,6 +1,47 @@
 <?php
 include('connection.php');
 
+
+session_start();
+// Fungsi add bookmark
+// Check if the user is logged in
+if (isset($_SESSION['user_id'])) {
+    $userId = $_SESSION['user_id'];
+    
+    // Check if bookmark action is triggered
+    if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
+        $taskId = $_GET['id'];
+
+        // Check if the task is not already bookmarked
+        $checkBookmarkSql = "SELECT * FROM deadlinemu.Bookmark WHERE UserID = $userId AND TaskID = $taskId";
+        $checkBookmarkResult = mysqli_query($connection, $checkBookmarkSql);
+
+        if (!$checkBookmarkResult) {
+            die("Error checking bookmark: " . mysqli_error($connection));
+        }
+
+        if (mysqli_num_rows($checkBookmarkResult) == 0) {
+            // Task is not bookmarked, add bookmark
+            $addBookmarkSql = "INSERT INTO deadlinemu.Bookmark (UserID, TaskID) VALUES ($userId, $taskId)";
+            
+            if (mysqli_query($connection, $addBookmarkSql)) {
+                header("Location: task.php?notification=added");
+                exit();
+            } else {
+                die("Error adding bookmark: " . mysqli_error($connection));
+            }
+        } else {
+            // Task is already bookmarked, send notification
+            header("Location: task.php?notification=exists");
+            exit();
+        }
+    }
+} 
+else {
+    header("Location: login.php");
+    exit();
+}
+
 // Fungsi untuk menghapus tugas
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $taskId = $_GET['id'];
@@ -11,36 +52,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
         exit();
     } else {
         die("Error deleting task: " . mysqli_error($connection));
-    }
-}
-
-// Check if bookmark action is triggered
-if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
-    $taskId = $_GET['id'];
-    $userId = 1; // Assuming a specific user for now, replace it with your actual user ID retrieval logic
-
-    // Check if the task is not already bookmarked
-    $checkBookmarkSql = "SELECT * FROM deadlinemu.Bookmark WHERE UserID = $userId AND TaskID = $taskId";
-    $checkBookmarkResult = mysqli_query($connection, $checkBookmarkSql);
-
-    if (!$checkBookmarkResult) {
-        die("Error checking bookmark: " . mysqli_error($connection));
-    }
-
-    if (mysqli_num_rows($checkBookmarkResult) == 0) {
-        // Task is not bookmarked, add bookmark
-        $addBookmarkSql = "INSERT INTO deadlinemu.Bookmark (UserID, TaskID) VALUES ($userId, $taskId)";
-
-        if (mysqli_query($connection, $addBookmarkSql)) {
-            header("Location: task.php?notification=added");
-            exit();
-        } else {
-            die("Error adding bookmark: " . mysqli_error($connection));
-        }
-    } else {
-        // Task is already bookmarked, send notification
-        header("Location: task.php?notification=exists");
-        exit();
     }
 }
 
@@ -78,7 +89,7 @@ if (!$result) {
         <a href="task_and_category.php">Task and Category</a>
         <a href="activity_log.php">Task Log</a>
         <a href="bookmark.php">Bookmark</a>
-        <a href="#">Logout</a>
+        <a href="logout.php">Logout</a>
     </div>
 
     <div class="container">

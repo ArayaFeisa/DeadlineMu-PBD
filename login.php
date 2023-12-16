@@ -1,34 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/stylelogin.css">
-    <title>Log in to DeadlineMU</title>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DeadlineMU</title>
 </head>
+
 <body>
-    <header>
-        <div class="logo">
-          <img src="../assets/images/DeadlineMu.jpg" alt="Your Logo">
-        </div>
-        <div class="header-text">
-          <h1 class="logo-text">DeadlineMu</h2>
-        </div>
-    </header>
-    <div class="wrapper text-center">
-        <h1 class="login-title">Log in to <span class="logo-title">DeadlineMu</span></h1>
-        <form action="/login" method="post">
-            <label class="label-text">Username</label>
-            <input type="text" name="username">
-            <label class="label-text">Password</label>
-            <input type="password" name="password">
-            <button type="submit">Let's Started</button>
-        </form>
-        <div class="create">
-            Don't have an account? <a href="signup.php">Sign up</a>
-        </div>
-    </div>
+    <h2>Login</h2>
+    
+    <?php
+    session_start();
+
+    // Check if the user is already logged in
+    if (isset($_SESSION['user_id'])) {
+        header("Location: homepage.php");
+        exit();
+    }
+
+    // Check if the form is submitted
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        include('connection.php'); // Include your database connection file
+
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        // Perform user authentication
+        $sql = "SELECT * FROM deadlinemu.User WHERE Username = '$username' AND Password = '$password'";
+        $result = mysqli_query($connection, $sql);
+
+        if ($result && mysqli_num_rows($result) == 1) {
+            $user = mysqli_fetch_assoc($result);
+
+            // Set user information in the session
+            $_SESSION['user_id'] = $user['UserID'];
+            $_SESSION['username'] = $user['Username'];
+
+            header("Location: homepage.php");
+            exit();
+        } else {
+            echo "Invalid username or password.";
+        }
+    }
+    ?>
+
+    <form method="post" action="login.php">
+        <label for="username">Username:</label>
+        <input type="text" name="username" required>
+
+        <br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" required>
+
+        <br>
+
+        <button type="submit">Login</button>
+    </form>
 </body>
-</html> 
+
+</html>

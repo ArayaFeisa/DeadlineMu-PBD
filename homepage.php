@@ -1,5 +1,12 @@
 <?php
 include('connection.php');
+session_start();
+
+// Check if the user is not logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 
 // Fungsi untuk menghapus kategori
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
@@ -47,7 +54,7 @@ if (!$result) {
         <a href="task_and_category.php">Task and Category</a>
         <a href="activity_log.php">Task Log</a>
         <a href="bookmark.php">Bookmark</a>
-        <a href="#">Logout</a>
+        <a href="logout.php">Logout</a>
     </div>
 
     <div class="container">
