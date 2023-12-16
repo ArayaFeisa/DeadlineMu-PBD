@@ -1,12 +1,5 @@
 <?php
 include('connection.php');
-session_start();
-
-// Check if the user is not logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
 
 // Fungsi untuk menghapus kategori
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
@@ -54,11 +47,12 @@ if (!$result) {
         <a href="task_and_category.php">Task and Category</a>
         <a href="activity_log.php">Task Log</a>
         <a href="bookmark.php">Bookmark</a>
-        <a href="logout.php">Logout</a>
+        <a href="#">Logout</a>
     </div>
 
     <div class="container">
         <p>Hello</p>
+        <p>Nana</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
