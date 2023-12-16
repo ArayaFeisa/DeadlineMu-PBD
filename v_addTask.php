@@ -21,6 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Error adding task: " . mysqli_error($connection));
     }
 }
+
+// Query untuk mengambil semua kategori
+$categorySql = "SELECT * FROM deadlinemu.Category";
+$categoryResult = mysqli_query($connection, $categorySql);
+
+// Memeriksa apakah query berhasil dieksekusi
+if (!$categoryResult) {
+    die("Error fetching categories: " . mysqli_error($connection));
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,8 +68,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="userID">User ID:</label>
             <input type="number" name="userID" class="form-control" required>
 
-            <label for="categoryID">Category ID:</label>
-            <input type="number" name="categoryID" class="form-control" required>
+            <label for="categoryID">Category:</label>
+            <select name="categoryID" class="form-control" required>
+                <?php
+                // Menampilkan nama kategori sebagai opsi dropdown
+                while ($categoryRow = mysqli_fetch_assoc($categoryResult)) {
+                    $categoryID = $categoryRow['CategoryID'];
+                    $categoryName = $categoryRow['CategoryName'];
+                    echo "<option value='$categoryID'>$categoryName</option>";
+                }
+                ?>
+            </select>
 
             <br>
             <button type="submit" class="btn btn-primary">Save</button>
