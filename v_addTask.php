@@ -1,5 +1,6 @@
 <?php
 include('connection.php');
+include('addActivityLog.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle form submission for adding a new task
@@ -14,7 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $insertSql = "INSERT INTO deadlinemu.Task (Title, Description, DueDate, Priority, Status, UserID, CategoryID) 
                   VALUES ('$title', '$description', '$dueDate', '$priority', '$status', '$userID', '$categoryID')";
 
+        // Contoh di dalam addTask.php
     if (mysqli_query($connection, $insertSql)) {
+        $taskID = mysqli_insert_id($connection);
+        addTaskActivityLog($userID, $taskID, 'Create Task');
+
         header("Location: task.php");
         exit();
     } else {

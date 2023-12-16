@@ -1,5 +1,6 @@
 <?php
 include('connection.php');
+include('addActivityLog.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $category_name = $_POST["category_name"];
@@ -9,13 +10,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "INSERT INTO deadlinemu.Category (CategoryName, UserID) VALUES ('$category_name', $user_id)";
 
-    if ($connection->query($sql) === TRUE) {
-        // Redirect to the category page after successful addition
-        header("Location: category.php");
-        exit();
-    } else {
-        $error_message = "Error: ";
-    }
+    // Contoh di dalam addCategory.php
+if ($connection->query($sql) === TRUE) {
+    $categoryID = mysqli_insert_id($connection);
+    addTaskActivityLog($user_id, $categoryID, 'Create Category');
+
+    header("Location: category.php");
+    exit();
+} else {
+    $error_message = "Error: ";
+}
+
 }
 ?>
 

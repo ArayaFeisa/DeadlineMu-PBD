@@ -32,7 +32,7 @@ if (!$categoryResult) {
         <a href="task.php">Task</a>
         <a href="category.php">Category</a>
         <a href="task_and_category.php">Task and Category</a>
-        <a href="#">Task Log</a>
+        <a href="activity_log.php">Task Log</a>
         <a href="bookmark.php">Bookmark</a>
         <a href="#">Logout</a>
     </div>
