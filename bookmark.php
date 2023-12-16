@@ -109,7 +109,7 @@ $bookmarks = getBookmarks($userId, $connection);
                             <td>{$bookmarkRow['TaskTitle']}</td>
                             <td>{$bookmarkRow['TaskDescription']}</td>
                             <td>{$bookmarkRow['DueDate']}</td>
-                            <td><a href='task.php?action=delete&id={$bookmarkRow['TaskID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>
+                            <td><a href='bookmark.php?action=delete&id={$bookmarkRow['TaskID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>
                           </tr>";
                     $count++;
                 }

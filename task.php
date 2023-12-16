@@ -14,6 +14,37 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     }
 }
 
+// Check if bookmark action is triggered
+if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
+    $taskId = $_GET['id'];
+    $userId = 1; // Assuming a specific user for now, replace it with your actual user ID retrieval logic
+
+    // Check if the task is not already bookmarked
+    $checkBookmarkSql = "SELECT * FROM deadlinemu.Bookmark WHERE UserID = $userId AND TaskID = $taskId";
+    $checkBookmarkResult = mysqli_query($connection, $checkBookmarkSql);
+
+    if (!$checkBookmarkResult) {
+        die("Error checking bookmark: " . mysqli_error($connection));
+    }
+
+    if (mysqli_num_rows($checkBookmarkResult) == 0) {
+        // Task is not bookmarked, add bookmark
+        $addBookmarkSql = "INSERT INTO deadlinemu.Bookmark (UserID, TaskID) VALUES ($userId, $taskId)";
+
+        if (mysqli_query($connection, $addBookmarkSql)) {
+            header("Location: task.php?notification=added");
+            exit();
+        } else {
+            die("Error adding bookmark: " . mysqli_error($connection));
+        }
+    } else {
+        // Task is already bookmarked, send notification
+        header("Location: task.php?notification=exists");
+        exit();
+    }
+}
+
+
 // Query untuk mengambil data tugas
 $sql = "SELECT * FROM deadlinemu.Task";
 $result = mysqli_query($connection, $sql);
@@ -85,7 +116,7 @@ if (!$result) {
                                 <td>{$row['UserID']}</td>
                                 <td>{$row['CategoryID']}</td>
                                 <td><a href='v_edittask.php?id={$row['TaskID']}' class='btn btn-warning'>Edit</a></td>                            
-                                <td><a href='v_edittask.php?id={$row['TaskID']}' class='btn btn-primary'>Bookmark</a></td>                            
+                                <td><a href='task.php?action=add&id={$row['TaskID']}' class='btn btn-primary'>Bookmark</a></td>                            
                                 <td><a href='task.php?action=delete&id={$row['TaskID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>
                               </tr>";
                         $count++;
@@ -97,7 +128,9 @@ if (!$result) {
             </tbody>
         </table>
     </div>
-
+    <div id="notification" class="alert alert-warning text-center" style="display: none;">
+        <strong id="notificationMessage"></strong>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
         integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
         crossorigin="anonymous">
@@ -106,6 +139,31 @@ if (!$result) {
         integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
         crossorigin="anonymous">
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Check if there's a notification parameter in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const notification = urlParams.get('notification');
+
+            if (notification === 'added') {
+                showNotification('Task bookmarked successfully!', 'alert-success');
+            } else if (notification === 'exists') {
+                showNotification('Task is already bookmarked.', 'alert-warning');
+            }
+        });
+
+        function showNotification(message, alertClass) {
+            const notificationElement = document.getElementById('notification');
+            notificationElement.textContent = message;
+            notificationElement.classList.add(alertClass);
+            notificationElement.style.display = 'block';
+            setTimeout(function () {
+                notificationElement.style.display = 'none';
+                notificationElement.classList.remove(alertClass);
+            }, 2000);
+        }
+    </script>
+
 </body>
 
 </html>
