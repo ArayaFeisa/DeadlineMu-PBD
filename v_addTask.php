@@ -1,6 +1,26 @@
 <?php
 include('connection.php');
 
+// Fungsi untuk mencatat aktivitas
+function logActivity($userId, $logType, $taskId = null) {
+    global $connection;
+
+    // Mencatat timestamp saat ini
+    $timestamp = date('Y-m-d H:i:s');
+
+    // Menyiapkan query untuk menyimpan log
+    $insertSql = "INSERT INTO deadlinemu.activityLog (UserID, TaskID, Timestamp, LogType) 
+                  VALUES ('$userId', '$taskId', '$timestamp', '$logType')";
+
+    // Menjalankan query
+    if (mysqli_query($connection, $insertSql)) {
+        // Log berhasil disimpan
+    } else {
+        // Gagal menyimpan log
+        echo "Error logging activity: " . mysqli_error($connection);
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle form submission for adding a new task
     $title = $_POST['title'];
@@ -14,9 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $insertSql = "INSERT INTO deadlinemu.Task (Title, Description, DueDate, Priority, Status, UserID, CategoryID) 
                   VALUES ('$title', '$description', '$dueDate', '$priority', '$status', '$userID', '$categoryID')";
 
-        // Contoh di dalam addTask.php
+    // Contoh di dalam addTask.php
     if (mysqli_query($connection, $insertSql)) {
         $taskID = mysqli_insert_id($connection);
+
+        // Pemanggilan logActivity untuk penambahan tugas
+        // logActivity($userID, "Add Task", $taskID);
 
         header("Location: task.php");
         exit();
@@ -34,6 +57,7 @@ if (!$categoryResult) {
     die("Error fetching categories: " . mysqli_error($connection));
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

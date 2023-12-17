@@ -1,6 +1,27 @@
 <?php
 include('connection.php');
 
+// Fungsi untuk mencatat aktivitas
+function logActivity($userId, $logType, $taskId = null) {
+    global $connection;
+
+    // Mencatat timestamp saat ini
+    $timestamp = date('Y-m-d H:i:s');
+
+    // Menyiapkan query untuk menyimpan log
+    $insertSql = "INSERT INTO deadlinemu.activityLog (UserID, TaskID, Timestamp, LogType) 
+                  VALUES ('$userId', '$taskId', '$timestamp', '$logType')";
+
+    // Menjalankan query
+    if (mysqli_query($connection, $insertSql)) {
+        // Log berhasil disimpan
+    } else {
+        // Gagal menyimpan log
+        echo "Error logging activity: " . mysqli_error($connection);
+    }
+}
+
+// Memeriksa jika metode yang digunakan adalah POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $category_name = $_POST["category_name"];
 
@@ -10,17 +31,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO deadlinemu.Category (CategoryName, UserID) VALUES ('$category_name', $user_id)";
 
     // Contoh di dalam addCategory.php
-if ($connection->query($sql) === TRUE) {
-    $categoryID = mysqli_insert_id($connection);
+    if ($connection->query($sql) === TRUE) {
+        $categoryID = mysqli_insert_id($connection);
 
-    header("Location: category.php");
-    exit();
-} else {
-    $error_message = "Error: ";
-}
+        // Pemanggilan logActivity untuk penambahan kategori
+        // logActivity($user_id, "Add Category", null);
 
+        header("Location: category.php");
+        exit();
+    } else {
+        $error_message = "Error: " . $connection->error;
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

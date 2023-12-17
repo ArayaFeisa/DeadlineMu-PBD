@@ -1,27 +1,36 @@
 <?php
 include('connection.php');
 
-// Fungsi untuk menambahkan log aktivitas berkaitan dengan tugas
-function addTaskActivityLog($userID, $taskID, $logType) {
+// Fungsi untuk mencatat aktivitas
+function logActivity($userId, $logType, $taskId = null) {
     global $connection;
 
+    // Mencatat timestamp saat ini
     $timestamp = date('Y-m-d H:i:s');
-    $insertSql = "INSERT INTO deadlinemu.activitylog (UserID, TaskID, Timestamp, LogType) 
-                  VALUES ($userID, $taskID, '$timestamp', '$logType')";
 
+    // Menyiapkan query untuk menyimpan log
+    $insertSql = "INSERT INTO deadlinemu.activityLog (UserID, TaskID, Timestamp, LogType) 
+                  VALUES ('$userId', '$taskId', '$timestamp', '$logType')";
+
+    // Menjalankan query
     if (mysqli_query($connection, $insertSql)) {
-        return true;
+        // Log berhasil disimpan
     } else {
-        die("Error adding activity log: " . mysqli_error($connection));
+        // Gagal menyimpan log
+        echo "Error logging activity: " . mysqli_error($connection);
     }
 }
 
-// Ambil data aktivitas log dari database
-$selectSql = "SELECT * FROM deadlinemu.activitylog WHERE LogType IN ('Create Task', 'Edit Task', 'Delete Task')";
-$result = mysqli_query($connection, $selectSql);
+// Query untuk mengambil data aktivitas
+$activityLogSql = "SELECT * FROM deadlinemu.activityLog";
+$activityLogResult = mysqli_query($connection, $activityLogSql);
 
-// Tampilan HTML untuk menampilkan aktivitas log
+// Memeriksa apakah query berhasil dieksekusi
+if (!$activityLogResult) {
+    die("Error fetching activity log: " . mysqli_error($connection));
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,7 +48,7 @@ $result = mysqli_query($connection, $selectSql);
         <div class="brand">
             DeadlineMU
         </div>
-        <a href="homepage.php">Home</a>
+        <a href="homepage.php" class="active">Home</a>
         <a href="task.php">Task</a>
         <a href="category.php">Category</a>
         <a href="task_and_category.php">Task and Category</a>
@@ -62,9 +71,10 @@ $result = mysqli_query($connection, $selectSql);
             </thead>
             <tbody>
                 <?php
-                if (mysqli_num_rows($result) > 0) {
+                // Menampilkan data log aktivitas
+                if (mysqli_num_rows($activityLogResult) > 0) {
                     $count = 1;
-                    while ($row = mysqli_fetch_assoc($result)) {
+                    while ($row = mysqli_fetch_assoc($activityLogResult)) {
                         echo "<tr>
                                 <td>{$count}</td>
                                 <td>{$row['UserID']}</td>
@@ -75,13 +85,12 @@ $result = mysqli_query($connection, $selectSql);
                         $count++;
                     }
                 } else {
-                    echo "<tr><td colspan='5'>No activity logs found</td></tr>";
+                    echo "<tr><td colspan='5'>No activity log found</td></tr>";
                 }
                 ?>
             </tbody>
         </table>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
         integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
         crossorigin="anonymous"></script>
@@ -91,3 +100,4 @@ $result = mysqli_query($connection, $selectSql);
 </body>
 
 </html>
+
