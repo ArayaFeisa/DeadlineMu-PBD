@@ -127,5 +127,13 @@ class Model {
         return mysqli_fetch_assoc($result) ? true : false;
     }
 
+    public function logActivity($userID, $taskID, $categoryID, $logType) {
+        $dateTime = date("Y-m-d H:i:s");
+
+        $sql = "INSERT INTO deadlinemu7.ActivityLog (UserID, TaskID, DateTimes, LogType) VALUES (?, NULL, ?, ?, ?)";
+        $stmt = mysqli_prepare($this->connection, $sql);
+        mysqli_stmt_bind_param($stmt, "iss", $userID, $taskID, $dateTime, $logType);
+        mysqli_stmt_execute($stmt);
+    }
 }
 ?>

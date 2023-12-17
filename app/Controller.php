@@ -69,5 +69,9 @@ class Controller {
         return $this->model->isTaskBookmarked($userID, $taskID);
     }
 
+    public function logActivity($userID, $taskID, $logType) {
+        $this->model->logActivity($userID, $taskID, $logType);
+    }
+
 }
 ?>
