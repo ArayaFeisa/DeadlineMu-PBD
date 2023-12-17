@@ -47,7 +47,7 @@
         <img class="logo" src="../assets/dlmulogo.png" alt="">
         <h1 class="logo-text">DeadlineMu</h1>
     </div>
-    <div class="form-container">
+    <div >
         <form method="post" action="login.php">
             <h1 class="login-title">Login</h1>
             <label for="username">Username:</label>
