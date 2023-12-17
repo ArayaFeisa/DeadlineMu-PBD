@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="stylelogin.css">
+    <link rel="stylesheet" href="styleLogin.css">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
 
     // Check if the form is submitted
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        include('connection.php'); // Include your database connection file
+        include '../database/connection.php';
 
         $username = $_POST['username'];
         $password = $_POST['password'];

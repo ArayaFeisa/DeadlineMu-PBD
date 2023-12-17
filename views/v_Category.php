@@ -1,26 +1,16 @@
 <?php
-include('connection.php');
+session_start();
+include '../app/Controller.php';
+$controller = new Controller();
 
-// Fungsi untuk menghapus kategori
+$userID = $_SESSION['user_id']; // Pastikan ini diatur melalui session
+$categories = $controller->displayUserCategories($userID);
+
+// Handle delete action
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
-    $categoryId = $_GET['id'];
-    $deleteSql = "DELETE FROM deadlinemu.Category WHERE CategoryID = $categoryId";
-    
-    if (mysqli_query($connection, $deleteSql)) {
-        header("Location: category.php");
-        exit();
-    } else {
-        die("Error deleting category: " . mysqli_error($connection));
-    }
-}
-
-// Query untuk mengambil data kategori
-$sql = "SELECT * FROM deadlinemu.Category";
-$result = mysqli_query($connection, $sql);
-
-// Memeriksa apakah query berhasil dieksekusi
-if (!$result) {
-    die("Error fetching categories: " . mysqli_error($connection));
+    $controller->deleteCategory($_GET['id']);
+    header("Location: v_Category.php");
+    exit;
 }
 ?>
 
@@ -33,7 +23,7 @@ if (!$result) {
     <title>DeadlineMU - Category</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylecategory.css">
+    <link rel="stylesheet" href="../resources/styleHomepage.css">
 </head>
 
 <body>
@@ -41,13 +31,13 @@ if (!$result) {
         <div class="brand">
             DeadlineMU
         </div>
-        <a href="homepage.php" class="active">Home</a>
-        <a href="task.php">Task</a>
-        <a href="category.php">Category</a>
-        <a href="task_and_category.php">Task and Category</a>
-        <a href="activity_log.php">Task Log</a>
-        <a href="bookmark.php">Bookmark</a>
-        <a href="logout.php">Logout</a>
+        <a href="../resources/homepage.php" class="active">Home</a>
+        <a href="../views/v_task.php">Task</a>
+        <a href="../views/v_Category.php">Category</a>
+        <a href="../views/v_taskandCategory.php">Task and Category</a>
+        <a href="../views/v_activityLog.php">Task Log</a>
+        <a href="../views/v_bookmark.php">Bookmark</a>
+        <a href="../resources/logout.php">Logout</a>
     </div>
 
     <div class="container">
@@ -57,22 +47,21 @@ if (!$result) {
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Category</th>
+                    <th>Category Name</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                // Menampilkan data kategori
-                if (mysqli_num_rows($result) > 0) {
+                if (!empty($categories)) {
                     $count = 1;
-                    while ($row = mysqli_fetch_assoc($result)) {
+                    foreach ($categories as $category) {
                         echo "<tr>
                                 <td>{$count}</td>
-                                <td>{$row['CategoryName']}</td>
-                                <td><a href='v_editCategory.php?id={$row['CategoryID']}' class='btn btn-warning'>Edit</a></td>
-                                <td><a href='category.php?action=delete&id={$row['CategoryID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>
+                                <td>{$category['CategoryName']}</td>
+                                <td><a href='v_editCategory.php?id={$category['CategoryID']}' class='btn btn-warning'>Edit</a></td>
+                                <td><a href='?action=delete&id={$category['CategoryID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>
                               </tr>";
                         $count++;
                     }

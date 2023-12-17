@@ -1,14 +1,15 @@
 <?php
-include('connection.php');
+session_start();
+include '../app/Controller.php';
+$controller = new Controller();
 
-// Query untuk mengambil semua kategori
-$categorySql = "SELECT * FROM deadlinemu.Category";
-$categoryResult = mysqli_query($connection, $categorySql);
-
-// Memeriksa apakah query berhasil dieksekusi
-if (!$categoryResult) {
-    die("Error fetching categories: " . mysqli_error($connection));
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
 }
+
+$userID = $_SESSION['user_id'];
+$categories = $controller->displayUserCategories($userID);
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +21,7 @@ if (!$categoryResult) {
     <title>DeadlineMU - Task and Category</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylecategory.css">
+        <link rel="stylesheet" href="../resources/styleHomepage.css">
 </head>
 
 <body>
@@ -28,34 +29,22 @@ if (!$categoryResult) {
         <div class="brand">
             DeadlineMU
         </div>
-        <a href="homepage.php" class="active">Home</a>
-        <a href="task.php">Task</a>
-        <a href="category.php">Category</a>
-        <a href="task_and_category.php">Task and Category</a>
-        <a href="activity_log.php">Task Log</a>
-        <a href="bookmark.php">Bookmark</a>
-        <a href="logout.php">Logout</a>
+        <a href="../resources/homepage.php" class="active">Home</a>
+        <a href="../views/v_task.php">Task</a>
+        <a href="../views/v_Category.php">Category</a>
+        <a href="../views/v_taskandCategory.php">Task and Category</a>
+        <a href="../views/v_activityLog.php">Task Log</a>
+        <a href="../views/v_bookmark.php">Bookmark</a>
+        <a href="../resources/logout.php">Logout</a>
     </div>
+
     <div class="container">
         <h2 class="mt-5 mb-3">Task and Category</h2>
-
-        <!-- Tampilkan semua kategori -->
-        <?php
-        while ($categoryRow = mysqli_fetch_assoc($categoryResult)) {
-            $categoryID = $categoryRow['CategoryID'];
-            $categoryName = $categoryRow['CategoryName'];
-
-            echo "<h3>$categoryName</h3>";
-
-            // Query untuk mengambil tugas berdasarkan kategori
-            $taskSql = "SELECT * FROM deadlinemu.Task WHERE CategoryID = $categoryID";
-            $taskResult = mysqli_query($connection, $taskSql);
-
-            // Memeriksa apakah query berhasil dieksekusi
-            if (!$taskResult) {
-                die("Error fetching tasks: " . mysqli_error($connection));
-            }
-
+        
+        <?php foreach ($categories as $categoryRow): ?>
+            <h3><?= htmlspecialchars($categoryRow['CategoryName']); ?></h3>
+            <?php
+            $tasks = $controller->displayTasksByCategory($categoryRow['CategoryID']);
             echo "<table class='table'>
                     <thead>
                         <tr>
@@ -67,14 +56,13 @@ if (!$categoryResult) {
                     </thead>
                     <tbody>";
 
-            // Menampilkan data tugas
-            if (mysqli_num_rows($taskResult) > 0) {
+            if (!empty($tasks)) {
                 $count = 1;
-                while ($taskRow = mysqli_fetch_assoc($taskResult)) {
+                foreach ($tasks as $taskRow) {
                     echo "<tr>
                             <td>{$count}</td>
-                            <td>{$taskRow['Title']}</td>
-                            <td>{$taskRow['Description']}</td>
+                            <td>".htmlspecialchars($taskRow['Title'])."</td>
+                            <td>".htmlspecialchars($taskRow['Description'])."</td>
                             <!-- Tambahkan kolom-kolom lain sesuai kebutuhan -->
                         </tr>";
                     $count++;
@@ -82,9 +70,8 @@ if (!$categoryResult) {
             } else {
                 echo "<tr><td colspan='3'>No tasks found</td></tr>";
             }
-
             echo "</tbody></table>";
-        }
+        endforeach;
         ?>
     </div>
 

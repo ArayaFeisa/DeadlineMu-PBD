@@ -1,33 +1,32 @@
 <?php
-include('connection.php');
+include '../app/Controller.php';
+$controller = new Controller();
 
+// Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $category_id = $_POST["category_id"];
-    $new_category_name = $_POST["new_category_name"];
+    $categoryID = $_POST["category_id"];
+    $newCategoryName = $_POST["new_category_name"];
 
-    $updateSql = "UPDATE deadlinemu.Category SET CategoryName = '$new_category_name' WHERE CategoryID = $category_id";
+    // Update the category
+    $controller->updateCategory($categoryID, $newCategoryName);
 
-    if (mysqli_query($connection, $updateSql)) {
-        header("Location: category.php");
-        exit();
-    } else {
-        die("Error updating category: " . mysqli_error($connection));
-    }
+    // Redirect to category list page
+    header("Location: v_Category.php");
+    exit();
 }
 
+// Get category details for editing
+$row = null;
 if (isset($_GET['id'])) {
-    $category_id = $_GET['id'];
-    $selectSql = "SELECT * FROM deadlinemu.Category WHERE CategoryID = $category_id";
-    $result = mysqli_query($connection, $selectSql);
-
-    if (!$result) {
-        die("Error fetching category details: " . mysqli_error($connection));
+    $row = $controller->editCategory($_GET['id']);
+    if (!$row) {
+        // Redirect if category is not found
+        header("Location: v_Category.php");
+        exit();
     }
-
-    $row = mysqli_fetch_assoc($result);
 } else {
     // Redirect if no category ID is provided
-    header("Location: category.php");
+    header("Location: v_Category.php");
     exit();
 }
 ?>
@@ -41,10 +40,23 @@ if (isset($_GET['id'])) {
     <title>DeadlineMU - Category</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/stylecategory.css">
+    <link rel="stylesheet" href="../resources/styleHomepage.css">
 </head>
 
 <body>
+    <div class="sidebar">
+        <div class="brand">
+            DeadlineMU
+        </div>
+        <a href="../resources/homepage.php" class="active">Home</a>
+        <a href="../views/v_task.php">Task</a>
+        <a href="../views/v_Category.php">Category</a>
+        <a href="../views/v_taskandCategory.php">Task and Category</a>
+        <a href="../views/v_activityLog.php">Task Log</a>
+        <a href="../views/v_bookmark.php">Bookmark</a>
+        <a href="../resources/logout.php">Logout</a>
+    </div>
+
     <div class="container">
         <h2 class="mt-5 mb-3">Edit Category</h2>
 

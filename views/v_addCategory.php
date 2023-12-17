@@ -1,50 +1,13 @@
 <?php
-include('connection.php');
-
-// Fungsi untuk mencatat aktivitas
-function logActivity($userId, $logType, $taskId = null) {
-    global $connection;
-
-    // Mencatat timestamp saat ini
-    $timestamp = date('Y-m-d H:i:s');
-
-    // Menyiapkan query untuk menyimpan log
-    $insertSql = "INSERT INTO deadlinemu.activityLog (UserID, TaskID, Timestamp, LogType) 
-                  VALUES ('$userId', '$taskId', '$timestamp', '$logType')";
-
-    // Menjalankan query
-    if (mysqli_query($connection, $insertSql)) {
-        // Log berhasil disimpan
-    } else {
-        // Gagal menyimpan log
-        echo "Error logging activity: " . mysqli_error($connection);
-    }
-}
-
-// Memeriksa jika metode yang digunakan adalah POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $category_name = $_POST["category_name"];
-
-    // Gantilah nilai UserID sesuai kebutuhan
-    $user_id = 1;
-
-    $sql = "INSERT INTO deadlinemu.Category (CategoryName, UserID) VALUES ('$category_name', $user_id)";
-
-    // Contoh di dalam addCategory.php
-    if ($connection->query($sql) === TRUE) {
-        $categoryID = mysqli_insert_id($connection);
-
-        // Pemanggilan logActivity untuk penambahan kategori
-        // logActivity($user_id, "Add Category", null);
-
-        header("Location: category.php");
-        exit();
-    } else {
-        $error_message = "Error: " . $connection->error;
-    }
+session_start(); 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
+    include '../app/Controller.php';
+    $controller = new Controller();
+    $controller->addCategory($_POST['category_name'], $_SESSION['user_id']);
+    header("Location: v_Category.php");
+    exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -55,10 +18,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>DeadlineMU - Add New Category</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/stylecategory.css">
+    <link rel="stylesheet" href="../resources/styleHomepage.css">
 </head>
 
 <body>
+    <div class="sidebar">
+        <div class="brand">
+            DeadlineMU
+        </div>
+        <a href="../resources/homepage.php" class="active">Home</a>
+        <a href="../views/v_task.php">Task</a>
+        <a href="../views/v_Category.php">Category</a>
+        <a href="../views/v_taskandCategory.php">Task and Category</a>
+        <a href="../views/v_activityLog.php">Task Log</a>
+        <a href="../views/v_bookmark.php">Bookmark</a>
+        <a href="../resources/logout.php">Logout</a>
+    </div>
+
     <div class="container">
         <h2 class="mt-5 mb-3">Add New Category</h2>
 

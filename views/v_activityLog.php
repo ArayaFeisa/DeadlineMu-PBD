@@ -1,5 +1,6 @@
 <?php
-include('connection.php');
+include '../database/connection.php';
+include '../app/Model.php';
 
 // Fungsi untuk mencatat aktivitas
 function logActivity($userId, $logType, $taskId = null) {
@@ -40,7 +41,7 @@ if (!$activityLogResult) {
     <title>DeadlineMU - Activity Log</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylecategory.css">
+        <link rel="stylesheet" href="../resources/styleHomepage.css">
 </head>
 
 <body>
@@ -48,13 +49,13 @@ if (!$activityLogResult) {
         <div class="brand">
             DeadlineMU
         </div>
-        <a href="homepage.php" class="active">Home</a>
-        <a href="task.php">Task</a>
-        <a href="category.php">Category</a>
-        <a href="task_and_category.php">Task and Category</a>
-        <a href="activity_log.php">Task Log</a>
-        <a href="bookmark.php">Bookmark</a>
-        <a href="logout.php">Logout</a>
+        <a href="../resources/homepage.php" class="active">Home</a>
+        <a href="../views/v_task.php">Task</a>
+        <a href="../views/v_Category.php">Category</a>
+        <a href="../views/v_taskandCategory.php">Task and Category</a>
+        <a href="../views/v_activityLog.php">Task Log</a>
+        <a href="../views/v_bookmark.php">Bookmark</a>
+        <a href="../resources/logout.php">Logout</a>
     </div>
 
     <div class="container">
@@ -100,4 +101,3 @@ if (!$activityLogResult) {
 </body>
 
 </html>
-

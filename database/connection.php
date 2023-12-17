@@ -3,7 +3,7 @@
 $server = "localhost";
 $username = "root";
 $password = "";
-$database = "deadlinemu";
+$database = "deadlinemu7";
 
 $connection = mysqli_connect($server, $username, $password, $database);
 
