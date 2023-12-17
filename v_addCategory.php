@@ -12,7 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Contoh di dalam addCategory.php
 if ($connection->query($sql) === TRUE) {
     $categoryID = mysqli_insert_id($connection);
-    addTaskActivityLog($user_id, $categoryID, 'Create Category');
 
     header("Location: category.php");
     exit();
