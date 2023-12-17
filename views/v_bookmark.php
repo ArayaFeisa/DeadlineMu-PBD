@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start();    
 include '../app/Controller.php';
 $controller = new Controller();
 
@@ -17,14 +17,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
 }
 
 
-// Handle delete bookmark
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $controller->deleteBookmark($_GET['id']);
     header("Location: v_bookmark.php");
     exit();
 }
 
-// NOTIF
 if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
     $taskID = $_GET['id'];
 
@@ -39,7 +37,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'add' && isset($_GET['id'])) {
     exit();
 }
 
-// Get bookmarks and categories
 $bookmarks = $controller->displayBookmarks($userID);
 $categories = $controller->displayUserCategories($userID);
 ?>

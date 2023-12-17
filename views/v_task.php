@@ -16,7 +16,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     header("Location: v_task.php");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +28,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="../resources/styleHomepage.css">
+    <style>
+        .bookmarked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+    </style>
 </head>
 
 <body>
@@ -70,18 +75,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
                     $count = 1;
                     foreach ($tasks as $task) {
                         echo "<tr>
-                                <td>{$count}</td>
-                                <td>{$task['Title']}</td>
-                                <td>{$task['Description']}</td>
-                                <td>{$task['DueDate']}</td>
-                                <td>" . ($task['Priority'] ? 'High' : 'Low') . "</td>
-                                <td>" . ($task['Status'] ? 'Finish' : 'On Process') . "</td>
-                                <td>{$task['UserID']}</td>
-                                <td>{$task['CategoryID']}</td>
-                                <td><a href='v_editTask.php?id={$task['TaskID']}' class='btn btn-warning'>Edit</a></td>                            
-                                <td><a href='v_bookmark.php?action=add&id={$task['TaskID']}' class='btn btn-primary'>Bookmark</a></td>                            
-                                <td><a href='v_task.php?action=delete&id={$task['TaskID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>
+                        <td>{$count}</td>
+                        <td>{$task['Title']}</td>
+                        <td>{$task['Description']}</td>
+                        <td>{$task['DueDate']}</td>
+                        <td>" . ($task['Priority'] ? 'High' : 'Low') . "</td>
+                        <td>" . ($task['Status'] ? 'Finish' : 'On Process') . "</td>
+                        <td>{$task['UserID']}</td>
+                        <td>{$task['CategoryID']}</td>
+                        <td><a href='v_editTask.php?id={$task['TaskID']}' class='btn btn-warning'>Edit</a></td>";
+
+                        $isBookmarked = $controller->isTaskBookmarked($userID, $task['TaskID']);
+                        $bookmarkAction = $isBookmarked ? 'delete' : 'add';
+                        $bookmarkText = $isBookmarked ? 'Bookmarked' : 'Bookmark';
+
+                        echo "<td>
+                                <a href='v_bookmark.php?action={$bookmarkAction}&id={$task['TaskID']}' class='btn " . ($isBookmarked ? 'btn-success bookmarked' : 'btn-primary') . "'>{$bookmarkText}</a>
+                              </td>
+                              <td><a href='v_task.php?action=delete&id={$task['TaskID']}' class='btn btn-danger' onclick='return confirm(\"Are you sure?\")'>Delete</a></td>
                               </tr>";
+
                         $count++;
                     }
                 } else {
@@ -126,7 +139,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
             }, 2000);
         }
     </script>
-
 </body>
 
 </html>
