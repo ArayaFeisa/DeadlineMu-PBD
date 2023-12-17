@@ -42,9 +42,14 @@
         }
     }
     ?>
-    <div class="container">
-        <h2>Login</h2>
+    <div class="wrapper">
+    <div class="logo-container">
+        <img class="logo" src="../assets/dlmulogo.png" alt="">
+        <h1 class="logo-text">DeadlineMu</h1>
+    </div>
+    <div class="form-container">
         <form method="post" action="login.php">
+            <h1 class="login-title">Login</h1>
             <label for="username">Username:</label>
             <input type="text" name="username" required>
     
@@ -57,7 +62,7 @@
     
             <button type="submit">Login</button>
         </form>
-
     </div>
+</div>
 </body>
 </html> 
